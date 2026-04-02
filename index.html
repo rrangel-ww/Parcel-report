@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+l<!DOCTYPE html>
 
 <html lang="en">
 <head>
@@ -112,7 +112,7 @@
     /* Critical areas */
     .ca-val   { font-weight: 400; }
     .ca-yes   { color: #0000FF; }
-    .ca-no    { color: #1a1f2e; font-weight: 400; }
+    .ca-no    { color: #16a34a; font-weight: 400; }
     .ca-text  { color: #0000FF; }
     /* Disclaimer */
     .disclaimer {
@@ -259,10 +259,10 @@
     <strong>Disclaimer</strong>
     This report is generated from GIS data maintained by Walla Walla County Community Development Department and is provided for informational purposes only. The presence of a mapped critical area does not constitute a formal determination. Additional review or information may be required prior to development.
     <br><br>
-    Parcels as shown may not reflect legal property boundaries. For information regarding public surveys or plat maps please contact the <a href="https://www.wwcowana.gov/departments/assessor/index.php" target="_blank" style="color:#0000FF;" aria-label="Walla Walla County Assessor's Office - opens in new tab">Walla Walla County Assessor's Office</a>.
+    Parcels as shown may not reflect legal property boundaries. For information regarding public surveys or plat maps please contact the <a href="https://www.wwcowa.gov/departments/assessor/index.php" target="_blank" style="color:#0000FF;" aria-label="Walla Walla County Assessor's Office - opens in new tab">Walla Walla County Assessor's Office</a>.
     <br><br>
     <strong style="font-size:10.5px;color:#000;">Other useful links:</strong><br>
-    <a href="https://www.wwcowana.gov/government/community_development/applications.php" target="_blank" style="color:#0000FF;" aria-label="Building Applications and Forms - opens in new tab">Building Applications &amp; Forms</a>
+    <a href="https://www.wwcowa.gov/government/community_development/applications.php" target="_blank" style="color:#0000FF;" aria-label="Building Applications and Forms - opens in new tab">Building Applications &amp; Forms</a>
     &nbsp;&nbsp;·&nbsp;&nbsp;
     <a href="https://cms7files.revize.com/wallawallacounty/document_center/commdev/Applications/Guide%20-%20Complete%20Application.pdf?t=202601061827390&t=202601061827390" target="_blank" style="color:#0000FF;" aria-label="Complete Application Guide PDF - opens in new tab">Complete Application Guide</a>
   </div>
@@ -299,15 +299,15 @@
 
   // Checklist URLs for each CA field
   var checklists = {
-    'f-chr': 'https://cms7files.revize.com/wallawallacounty/document_center/commdev/Applications/Checklist%20-%20Critical%20Aquifer%20Recharge%20Areas.pdf',
-    'f-cmr': 'https://cms7files.revize.com/wallawallacounty/document_center/commdev/Applications/Checklist%20-%20Critical%20Aquifer%20Recharge%20Areas.pdf',
-    'f-chk': 'https://cms7files.revize.com/wallawallacounty/document_center/commdev/Applications/Checklist%20-%20Habitat%20Conservation%20Areas.pdf',
-    'f-cso': 'https://cms7files.revize.com/wallawallacounty/document_center/commdev/Applications/Checklist%20-%20Habitat%20Conservation%20Areas.pdf',
-    'f-cwi': 'https://cms7files.revize.com/wallawallacounty/document_center/commdev/Applications/Checklist%20-%20Habitat%20Conservation%20Areas.pdf',
-    'f-csl': 'https://cms7files.revize.com/wallawallacounty/document_center/commdev/Applications/Checklist%20-%20Geologically%20Hazardous%20Areas.pdf',
-    'f-cli': 'https://cms7files.revize.com/wallawallacounty/document_center/commdev/Applications/Preliminary%20Liquefaction%20Assessment.pdf',
+    'f-chr': 'https://www.wwcowa.gov/document_center/commdev/Applications/Checklist%20-%20Critical%20Aquifer%20Recharge%20Areas.html',
+    'f-cmr': 'https://www.wwcowa.gov/document_center/commdev/Applications/Checklist%20-%20Critical%20Aquifer%20Recharge%20Areas.html',
+    'f-chk': 'https://www.wwcowa.gov/document_center/commdev/Applications/Checklist%20-%20Habitat%20Conservation%20Areas.html',
+    'f-cso': 'https://www.wwcowa.gov/document_center/commdev/Applications/Checklist%20-%20Habitat%20Conservation%20Areas.html',
+    'f-cwi': 'https://www.wwcowa.gov/document_center/commdev/Applications/Checklist%20-%20Habitat%20Conservation%20Areas.html',
+    'f-csl': 'https://www.wwcowa.gov/document_center/commdev/Applications/Checklist%20-%20Geologically%20Hazardous%20Areas.html',
+    'f-cli': 'https://www.wwcowa.gov/document_center/commdev/Applications/Preliminary%20Liquefaction%20Assessment.html',
     'f-cwe': 'https://cms7files.revize.com/wallawallacounty/document_center/commdev/Applications/Checklist%20-%20Wetlands.pdf',
-    'f-rip': 'https://cms7files.revize.com/wallawallacounty/document_center/commdev/Applications/Checklist%20-%20Habitat%20Conservation%20Areas.pdf'
+    'f-rip': 'https://www.wwcowa.gov/document_center/commdev/Applications/Checklist%20-%20Habitat%20Conservation%20Areas.html'
   };
 
   function setCA(id, val) {
@@ -322,9 +322,9 @@
       el.className = 'ca-val ca-yes';
       var url = checklists[id];
       if (url) {
-        el.innerHTML = v + ' &ndash; <a href="' + url + '" target="_blank" aria-label="See checklist for ' + v + ' - opens in new tab" style="color:#0000FF;text-decoration:none;" onmouseover="this.style.textDecoration=\'underline\'" onmouseout="this.style.textDecoration=\'none\'">See Checklist &#x2197;</a>';
+        el.innerHTML = '<span style="color:#dc2626;">' + v + '</span> <span style="color:#1a1f2e;">&ndash;</span> <a href="' + url + '" target="_blank" aria-label="See checklist - opens in new tab" style="color:#0000FF;text-decoration:none;" onmouseover="this.style.textDecoration=\'underline\'" onmouseout="this.style.textDecoration=\'none\'">See Checklist &#x2197;</a>';
       } else {
-        el.textContent = v;
+        el.innerHTML = '<span style="color:#dc2626;">' + v + '</span>';
       }
     }
   }
@@ -338,7 +338,7 @@
       el.className = 'ca-val ca-no';
     } else {
       el.className = 'ca-val ca-yes';
-      el.innerHTML = v + ' &ndash; <a href="https://library.municode.com/wa/walla_walla_county/codes/code_of_ordinances?nodeId=TIT18EN_CH18.12FLPR" target="_blank" aria-label="See WWCC Chapter 18.12 Flood Damage Prevention - opens in new tab" style="color:#0000FF;text-decoration:none;" onmouseover="this.style.textDecoration=\'underline\'" onmouseout="this.style.textDecoration=\'none\'">See WWCC Chapter 18.12 Flood Damage Prevention &#x2197;</a>';
+      el.innerHTML = '<span style="color:#dc2626;">' + v + '</span> <span style="color:#1a1f2e;">&ndash;</span> <a href="https://library.municode.com/wa/walla_walla_county/codes/code_of_ordinances?nodeId=TIT18EN_CH18.12FLPR" target="_blank" aria-label="See WWCC Chapter 18.12 Flood Damage Prevention - opens in new tab" style="color:#0000FF;text-decoration:none;" onmouseover="this.style.textDecoration=\'underline\'" onmouseout="this.style.textDecoration=\'none\'">See WWCC Chapter 18.12 Flood Damage Prevention &#x2197;</a>';
     }
   }
 
@@ -442,7 +442,7 @@
       if (ripBuf && ripBuf.toUpperCase() !== 'NO') ripDisplay += ' — ' + ripBuf;
       ripEl.className = 'ca-val ca-yes';
       var ripUrl = checklists['f-rip'];
-      ripEl.innerHTML = ripDisplay + ' &ndash; <a href="' + ripUrl + '" target="_blank" aria-label="See checklist for riparian buffer - opens in new tab" style="color:#0000FF;text-decoration:none;" onmouseover="this.style.textDecoration=\'underline\'" onmouseout="this.style.textDecoration=\'none\'">See Checklist &#x2197;</a>';
+      ripEl.innerHTML = '<span style="color:#dc2626;">' + ripDisplay + '</span> <span style="color:#1a1f2e;">&ndash;</span> <a href="' + ripUrl + '" target="_blank" aria-label="See checklist for riparian buffer - opens in new tab" style="color:#0000FF;text-decoration:none;" onmouseover="this.style.textDecoration=\'underline\'" onmouseout="this.style.textDecoration=\'none\'">See Checklist &#x2197;</a>';
     }
   }
 
