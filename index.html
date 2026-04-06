@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -21,11 +20,11 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      border-bottom: 4px solid #869d5c;
+      border-bottom: none;
     }
     .header-left { display: flex; align-items: center; gap: 14px; }
     .header-seal {
-      width: 50px; height: 50px;
+      width: 70px; height: 70px;
       border: 2px solid #bb3829;
       border-radius: 50%;
       display: flex; align-items: center; justify-content: center;
@@ -36,9 +35,9 @@
     .header-title  { font-size: 16px; font-weight: 700; line-height: 1.2; color: #fff; }
     .header-sub    { font-size: 14px; color: #fff; opacity: .85; margin-top: 3px; }
     .btn-view {
-      background: #869d5c;
-      color: #fff;
-      border: none;
+      background: #F2EDDC;
+      color: #000;
+      border: 1px solid #869d5c;
       border-radius: 4px;
       padding: 9px 20px;
       font-size: 13px;
@@ -50,8 +49,10 @@
       gap: 7px;
       flex-shrink: 0;
       transition: background .15s;
+      -webkit-appearance: none;
+      appearance: none;
     }
-    .btn-view:hover { background: #7a8f52; }
+    .btn-view:hover { background: #DEDAC3; }
     .page { max-width: 900px; margin: 22px auto; padding: 0 22px; }
     .two-col { display: table; width: 100%; border-collapse: separate; border-spacing: 0; margin: 0 0 14px; }
     .two-col-cell { display: table-cell; width: 50%; vertical-align: top; padding-right: 7px; }
@@ -112,11 +113,11 @@
     /* Critical areas */
     .ca-val   { font-weight: 400; }
     .ca-yes   { color: #0000FF; }
-    .ca-no    { color: #16a34a; font-weight: 400; }
+    .ca-no    { color: #357802; font-weight: 400; }
     .ca-text  { color: #0000FF; }
     /* Disclaimer */
     .disclaimer {
-      border: 1px solid #869d5c;
+      border: 1px solid #d1d5de;
       background: #fdfbf3;
       border-radius: 7px;
       padding: 11px 16px;
@@ -178,7 +179,7 @@
 <div class="header">
   <div class="header-left">
     <div class="header-seal">
-      <img src="https://jobs.wsac.org/wp-content/uploads/job-manager-uploads/company_logo/2022/03/Walla-Walla-County-Seal-147x150.jpg" alt="Walla Walla County Seal" style="width:44px;height:45px;object-fit:contain;border-radius:50%;">
+      <img src="https://jobs.wsac.org/wp-content/uploads/job-manager-uploads/company_logo/2022/03/Walla-Walla-County-Seal-147x150.jpg" alt="Walla Walla County Seal" style="width:64px;height:65px;object-fit:contain;border-radius:50%;">
     </div>
     <div>
       <div class="header-agency">Walla Walla County</div>
@@ -200,6 +201,7 @@
 </header>
 
 <main>
+<h1 class="sr-only">Walla Walla County Community Development — Parcel Information Report</h1>
 <div class="page">
   <div class="two-col" style="font-size:0;">
     <div class="two-col-cell" style="font-size:14px;"><div class="section">
@@ -237,7 +239,6 @@
   </div>
 
   <!-- Critical Areas -->
-
   <div class="section">
     <div class="section-head">
       <h2>Critical Areas</h2>
@@ -258,8 +259,8 @@
       </dl>
   </div>
 
-  <div class="disclaimer" role="note">
-    <strong>Disclaimer</strong>
+  <section class="disclaimer" aria-labelledby="disclaimer-heading">
+    <h2 id="disclaimer-heading" style="font-size:11px;text-transform:uppercase;letter-spacing:.07em;margin-bottom:5px;color:#000;font-weight:700;">Disclaimer</h2>
     This report is generated from GIS data maintained by Walla Walla County Community Development Department and is provided for informational purposes only. The presence of a mapped critical area does not constitute a formal determination. Additional review or information may be required prior to development.
     <br><br>
     Parcels as shown may not reflect legal property boundaries. For information regarding public surveys or plat maps please contact the <a href="https://www.wwcowa.gov/departments/assessor/index.php" target="_blank" style="color:#0000FF;">Walla Walla County Assessor's Office<span class="sr-only"> (opens in new tab)</span></a>.
@@ -268,7 +269,7 @@
     <a href="https://www.wwcowa.gov/government/community_development/applications.php" target="_blank" style="color:#0000FF;">Building Applications &amp; Forms<span class="sr-only"> (opens in new tab)</span></a>
     &nbsp;&nbsp;·&nbsp;&nbsp;
     <a href="https://cms7files.revize.com/wallawallacounty/document_center/commdev/Applications/Guide%20-%20Complete%20Application.pdf?t=202601061827390&t=202601061827390" target="_blank" style="color:#0000FF;">Complete Application Guide<span class="sr-only"> (opens in new tab)</span></a>
-  </div>
+  </section>
 </div>
 </main>
 
