@@ -52,7 +52,7 @@
     .footer a { color: #000; text-decoration: none; }
     .footer a:hover { text-decoration: underline; }
     .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
-    @page { size: letter; margin: 0.4in; }
+    @page { size: letter; margin: 0.25in; }
     @media print {
       .btn-view  { display: none !important; }
       .header { -webkit-print-color-adjust: exact; print-color-adjust: exact; padding: 8px 20px; }
@@ -145,31 +145,31 @@
     <table class="ca-table" role="presentation">
       <tr>
         <th class="ca-th" scope="row">Flood Hazard Risk</th><td class="ca-td"><div class="ca-val" id="f-flood">—</div></td>
-        <th class="ca-th" scope="row">Shrubsteppe Habitat</th><td class="ca-td"><div class="ca-val" id="f-csh">—</div></td>
-      </tr>
-      <tr>
         <th class="ca-th" scope="row">Flood Hazard Zone</th><td class="ca-td"><div class="ca-val" id="f-fz">—</div></td>
-        <th class="ca-th" scope="row">Slope / Erosion Hazard</th><td class="ca-td"><div class="ca-val ca-no" id="f-csl">—</div></td>
-      </tr>
-      <tr>
-        <th class="ca-th" scope="row">CARA High Recharge Vulnerability</th><td class="ca-td"><div class="ca-val" id="f-chr">—</div></td>
-        <th class="ca-th" scope="row">Faults</th><td class="ca-td"><div class="ca-val" id="f-cflt">—</div></td>
       </tr>
       <tr>
         <th class="ca-th" scope="row">CARA Moderate Recharge Vulnerability</th><td class="ca-td"><div class="ca-val" id="f-cmr">—</div></td>
-        <th class="ca-th" scope="row">Liquefaction</th><td class="ca-td"><div class="ca-val" id="f-cli">—</div></td>
+        <th class="ca-th" scope="row">CARA High Recharge Vulnerability</th><td class="ca-td"><div class="ca-val" id="f-chr">—</div></td>
+      </tr>
+      <tr>
+        <th class="ca-th" scope="row">CARA Wellhead Protection</th><td class="ca-td"><div class="ca-val" id="f-cwp">—</div></td>
+        <th class="ca-th" scope="row">Shrubsteppe Habitat</th><td class="ca-td"><div class="ca-val" id="f-csh">—</div></td>
       </tr>
       <tr>
         <th class="ca-th" scope="row">Ferruginous Hawk Habitat</th><td class="ca-td"><div class="ca-val" id="f-chk">—</div></td>
-        <th class="ca-th" scope="row">Wetlands</th><td class="ca-td"><div class="ca-val" id="f-cwe">—</div></td>
+        <th class="ca-th" scope="row">Wintering Birds of Prey Habitat</th><td class="ca-td"><div class="ca-val" id="f-cwi">—</div></td>
       </tr>
       <tr>
         <th class="ca-th" scope="row">Neotropical Migrant Songbird Habitat</th><td class="ca-td"><div class="ca-val" id="f-cso">—</div></td>
-        <th class="ca-th" scope="row">Riparian Buffer</th><td class="ca-td"><div class="ca-val" id="f-rip">—</div></td>
+        <th class="ca-th" scope="row">Slope / Erosion Hazard</th><td class="ca-td"><div class="ca-val ca-no" id="f-csl">—</div></td>
       </tr>
       <tr>
-        <th class="ca-th" scope="row">Wintering Birds of Prey Habitat</th><td class="ca-td"><div class="ca-val" id="f-cwi">—</div></td>
-        <td class="ca-td" colspan="2"></td>
+        <th class="ca-th" scope="row">Liquefaction</th><td class="ca-td"><div class="ca-val" id="f-cli">—</div></td>
+        <th class="ca-th" scope="row">Faults</th><td class="ca-td"><div class="ca-val" id="f-cflt">—</div></td>
+      </tr>
+      <tr>
+        <th class="ca-th" scope="row">Riparian Buffer</th><td class="ca-td"><div class="ca-val" id="f-rip">—</div></td>
+        <th class="ca-th" scope="row">Wetlands</th><td class="ca-td"><div class="ca-val" id="f-cwe">—</div></td>
       </tr>
     </table>
   </div>
@@ -220,6 +220,7 @@
   var checklists = {
     'f-chr': 'https://www.wwcowa.gov/document_center/commdev/Applications/Checklist%20-%20Critical%20Aquifer%20Recharge%20Areas.html',
     'f-cmr': 'https://www.wwcowa.gov/document_center/commdev/Applications/Checklist%20-%20Critical%20Aquifer%20Recharge%20Areas.html',
+    'f-cwp': 'https://www.wwcowa.gov/document_center/commdev/Applications/Checklist%20-%20Critical%20Aquifer%20Recharge%20Areas.html',
     'f-chk': 'https://www.wwcowa.gov/document_center/commdev/Applications/Checklist%20-%20Habitat%20Conservation%20Areas.html',
     'f-cso': 'https://www.wwcowa.gov/document_center/commdev/Applications/Checklist%20-%20Habitat%20Conservation%20Areas.html',
     'f-cwi': 'https://www.wwcowa.gov/document_center/commdev/Applications/Checklist%20-%20Habitat%20Conservation%20Areas.html',
@@ -273,7 +274,6 @@
   var own = get('own');
   var geo = get('geo');
 
-  // Set page title for PDF filename
   if (geo) {
     var yyyy = now.getFullYear();
     var mm = String(now.getMonth() + 1).padStart(2, '0');
@@ -305,12 +305,11 @@
   var acr = get('acr');
   document.getElementById('f-acres').textContent = (acr && !isNaN(parseFloat(acr))) ? parseFloat(acr).toFixed(2) + ' ac' : '—';
 
-  // Well Report — construct ecology URL from bounding box fields
+  // Well Report — hidden until ready
   var wellEl = document.getElementById('f-well');
   var bwl = get('bwl'), bwr = get('bwr'), bwt = get('bwt'), bwb = get('bwb');
   var bsl = get('bsl'), bsr = get('bsr'), bst = get('bst'), bsb = get('bsb');
   if (wellEl && bwl && bwr && bwt && bwb && bsl && bsr && bst && bsb) {
-    // Strip thousand separators introduced by field formatting
     function stripCommas(v) { return v.replace(/,/g, ''); }
     var wellUrl = 'https://appswr.ecology.wa.gov/wellconstruction/map/WCLSWebMap/SearchResultsWithPaging.aspx?left=' + stripCommas(bwl) + '&right=' + stripCommas(bwr) + '&top=' + stripCommas(bwt) + '&bottom=' + stripCommas(bwb) + '&selLeft=' + stripCommas(bsl) + '&selRight=' + stripCommas(bsr) + '&selTop=' + stripCommas(bsb) + '&selBottom=' + stripCommas(bst) + '&search_scope=1&result_num=25&sort_order=OwnerName&page_index=0';
     wellEl.innerHTML = '<a class="val-link" href="' + wellUrl + '" target="_blank">View Well Logs<span class="sr-only"> (opens in new tab)</span></a>';
@@ -352,16 +351,13 @@
   var sho = get('sho'), sha = get('sha');
   set('f-shoreline', (sho && sha) ? sho + '  (' + sha + ')' : (sho || null));
 
-  // Designated Mineral Lands — plain value
-  set('f-mineral', get('mrl'));
-  set('f-seismic', get('smc'));
-
+  set('f-mineral',  get('mrl'));
+  set('f-seismic',  get('smc'));
   set('f-millcreek', get('mc'));
   set('f-sfr', get('sfr'));
   set('f-ssi', get('ssi'));
   set('f-sre', get('sre'));
 
-  // Setback conditions
   var sbn = get('sbn');
   if (sbn) {
     var formatted = sbn.replace(/\s*(\(\d+\))/g, function(match, p1, offset) {
@@ -373,16 +369,18 @@
   // ── Critical Areas ──
   setCAText('f-flood', get('cfr'));
   setCAText('f-fz',    get('cfz'));
-  setCA('f-chr', get('chr'));
   setCA('f-cmr', get('cmr'));
-  setCA('f-chk', get('chk'));
-  setCA('f-cso', get('cso'));
-  setCA('f-cwi', get('cwi'));
+  setCA('f-chr', get('chr'));
+  setCA('f-cwp', get('cwp'));
   setCA('f-csh', get('csh'));
+  setCA('f-chk', get('chk'));
+  setCA('f-cwi', get('cwi'));
+  setCA('f-cso', get('cso'));
   // Slope / Erosion Hazard — shows — until layer is updated
   // setCA('f-csl', get('csl'));
   setCA('f-cli', get('cli'));
   setCA('f-cwe', get('cwe'));
+
   // Faults — custom link text
   var cfltEl = document.getElementById('f-cflt');
   var cfltVal = get('cflt') || 'NO';
@@ -396,6 +394,7 @@
     }
   }
 
+  // Riparian Buffer
   var ripEl = document.getElementById('f-rip');
   var ripName = get('rnn'), ripBuf = get('rbn');
   if (ripEl) {
