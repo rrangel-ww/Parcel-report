@@ -122,7 +122,7 @@
         <div class="dlist-row"><dt>Zoning</dt><dd class="val-blue" id="f-zoning">—</dd></div>
         <div class="dlist-row"><dt>Land Use</dt><dd id="f-landuse">—</dd></div>
         <div class="dlist-row"><dt>Urban Growth Area</dt><dd id="f-uga">—</dd></div>
-        <div class="dlist-row"><dt>Shoreline Designation</dt><dd id="f-shoreline">—</dd></div>
+        <div class="dlist-row"><dt>Shoreline Designation</dt><dd><a href="https://cms7files.revize.com/wallawallacounty/document_center/commdev/2022%20SMP/!Walla%20Walla%20County%20Shoreline%20Master%20Program%20-%20effective%20October%202023.pdf" target="_blank" class="val-link">2023 Shoreline Master Program (SMP)<span class="sr-only"> (opens in new tab)</span></a><div id="f-shoreline" style="font-weight:400;color:#1a1f2e;"></div></dd></div>
         <div class="dlist-row"><dt>Designated Mineral Lands</dt><dd id="f-mineral">—</dd></div>
         <div class="dlist-row"><dt>Seismic Design Class</dt><dd id="f-seismic">—</dd></div>
         <div class="dlist-row"><dt>Mill Creek Wildfire Protection</dt><dd><a href="https://library.municode.com/wa/walla_walla_county/codes/code_of_ordinances?nodeId=TIT15BUCO_CH15.04BUCO_ARTXMICRWIPR" target="_blank" class="val-link">WWCC 15.04.510 - Mill Creek Wildfire Protection<span class="sr-only"> (opens in new tab)</span></a><div id="f-millcreek" style="font-weight:400;color:#1a1f2e;"></div></dd></div>
@@ -180,7 +180,9 @@
     <p><strong style="font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:#000;">Other useful links:</strong></p>
     <p><a href="https://www.wwcowa.gov/government/community_development/new_app_forms.php" target="_blank" style="color:#0000FF;">Building Applications &amp; Forms<span class="sr-only"> (opens in new tab)</span></a>
     &nbsp;&nbsp;·&nbsp;&nbsp;
-    <a href="https://cms7files.revize.com/wallawallacounty/document_center/commdev/Applications/Guide%20-%20Complete%20Application.pdf" target="_blank" style="color:#0000FF;">Complete Application Guide<span class="sr-only"> (opens in new tab)</span></a></p>
+    <a href="https://cms7files.revize.com/wallawallacounty/document_center/commdev/Applications/Guide%20-%20Complete%20Application.pdf" target="_blank" style="color:#0000FF;">Complete Application Guide<span class="sr-only"> (opens in new tab)</span></a>
+    &nbsp;&nbsp;·&nbsp;&nbsp;
+    <a href="https://cms7files.revize.com/wallawallacounty/document_center/commdev/planning/comp%20plan/FINAL%20Walla%20Walla%20County%20Comp%20Plan%20(080519)%20(complete).pdf" target="_blank" style="color:#0000FF;">2019 Comprehensive Plan<span class="sr-only"> (opens in new tab)</span></a></p>
   </section>
 </div>
 </main>
@@ -348,7 +350,8 @@
   set('f-uga', get('uga'));
 
   var sho = get('sho'), sha = get('sha');
-  set('f-shoreline', (sho && sha) ? sho + '  (' + sha + ')' : (sho || null));
+  var shoreEl = document.getElementById('f-shoreline');
+  if (shoreEl) shoreEl.textContent = (sho && sha) ? sho + '  (' + sha + ')' : (sho || '—');
 
   set('f-mineral',  get('mrl'));
   set('f-seismic',  get('smc'));
