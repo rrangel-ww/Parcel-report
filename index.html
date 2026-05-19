@@ -123,7 +123,7 @@
         <div class="dlist-row"><dt>Land Use</dt><dd id="f-landuse">—</dd></div>
         <div class="dlist-row"><dt>Urban Growth Area</dt><dd id="f-uga">—</dd></div>
         <div class="dlist-row"><dt>Shoreline Designation</dt><dd><a href="https://cms7files.revize.com/wallawallacounty/document_center/commdev/2022%20SMP/!Walla%20Walla%20County%20Shoreline%20Master%20Program%20-%20effective%20October%202023.pdf" target="_blank" class="val-link">2023 Shoreline Master Program (SMP)<span class="sr-only"> (opens in new tab)</span></a><div id="f-shoreline" style="font-weight:400;color:#1a1f2e;"></div></dd></div>
-        <div class="dlist-row"><dt>Designated Mineral Lands</dt><dd id="f-mineral">—</dd></div>
+        <div class="dlist-row"><dt>Designated Mineral Lands</dt><dd><a href="https://library.municode.com/wa/walla_walla_county/codes/code_of_ordinances?nodeId=TIT18EN_CH18.10MIRELAPO" target="_blank" class="val-link">WWCC 18.10 - Mineral Resource Lands<span class="sr-only"> (opens in new tab)</span></a><div id="f-mineral" style="font-weight:400;color:#1a1f2e;"></div></dd></div>
         <div class="dlist-row"><dt>Seismic Design Class</dt><dd id="f-seismic">—</dd></div>
         <div class="dlist-row"><dt>Mill Creek Wildfire Protection</dt><dd><a href="https://library.municode.com/wa/walla_walla_county/codes/code_of_ordinances?nodeId=TIT15BUCO_CH15.04BUCO_ARTXMICRWIPR" target="_blank" class="val-link">WWCC 15.04.510 - Mill Creek Wildfire Protection<span class="sr-only"> (opens in new tab)</span></a><div id="f-millcreek" style="font-weight:400;color:#1a1f2e;"></div></dd></div>
         <div class="dlist-row"><dt>Honey Bee Control Area</dt><dd><a href="https://library.municode.com/wa/walla_walla_county/codes/code_of_ordinances?nodeId=TIT17ZO_CH17.26DESTNI_17.26.020TAMISTAN" target="_blank" class="val-link">WWCC 17.26.020 - Animals<span class="sr-only"> (opens in new tab)</span></a><div id="f-bee" style="font-weight:400;color:#1a1f2e;"></div></dd></div>
@@ -353,7 +353,8 @@
   var shoreEl = document.getElementById('f-shoreline');
   if (shoreEl) shoreEl.textContent = (sho && sha) ? sho + '  (' + sha + ')' : (sho || '—');
 
-  set('f-mineral',  get('mrl'));
+  var mineralEl = document.getElementById('f-mineral');
+  if (mineralEl) mineralEl.textContent = get('mrl') || '—';
   set('f-seismic',  get('smc'));
   var mcEl = document.getElementById('f-millcreek');
   if (mcEl) mcEl.textContent = get('mc') || '—';
