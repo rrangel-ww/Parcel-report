@@ -125,8 +125,8 @@
         <div class="dlist-row"><dt>Shoreline Designation</dt><dd id="f-shoreline">—</dd></div>
         <div class="dlist-row"><dt>Designated Mineral Lands</dt><dd id="f-mineral">—</dd></div>
         <div class="dlist-row"><dt>Seismic Design Class</dt><dd id="f-seismic">—</dd></div>
-        <div class="dlist-row"><dt>Mill Creek Wildfire Protection</dt><dd id="f-millcreek">—</dd></div>
-        <div class="dlist-row"><dt>Honey Bee Control Area</dt><dd id="f-bee">—</dd></div>
+        <div class="dlist-row"><dt>Mill Creek Wildfire Protection</dt><dd><a href="https://library.municode.com/wa/walla_walla_county/codes/code_of_ordinances?nodeId=TIT15BUCO_CH15.04BUCO_ARTXMICRWIPR" target="_blank" class="val-link">WWCC 15.04.510 - Mill Creek Wildfire Protection<span class="sr-only"> (opens in new tab)</span></a><div id="f-millcreek" style="margin-top:4px;font-weight:400;color:#1a1f2e;"></div></dd></div>
+        <div class="dlist-row"><dt>Honey Bee Control Area</dt><dd><a href="https://library.municode.com/wa/walla_walla_county/codes/code_of_ordinances?nodeId=TIT17ZO_CH17.26DESTNI_17.26.020TAMISTAN" target="_blank" class="val-link">WWCC 17.26.020 - Animals<span class="sr-only"> (opens in new tab)</span></a><div id="f-bee" style="margin-top:4px;font-weight:400;color:#1a1f2e;"></div></dd></div>
         <div class="dlist-row"><dt>Front Setback</dt><dd id="f-sfr">—</dd></div>
         <div class="dlist-row"><dt>Side Setback</dt><dd id="f-ssi">—</dd></div>
         <div class="dlist-row"><dt>Rear Setback</dt><dd id="f-sre">—</dd></div>
@@ -352,8 +352,10 @@
 
   set('f-mineral',  get('mrl'));
   set('f-seismic',  get('smc'));
-  set('f-millcreek', get('mc'));
-  set('f-bee', get('bee'));
+  var mcEl = document.getElementById('f-millcreek');
+  if (mcEl) mcEl.textContent = get('mc') || '—';
+  var beeEl = document.getElementById('f-bee');
+  if (beeEl) beeEl.textContent = get('bee') || '—';
   set('f-sfr', get('sfr'));
   set('f-ssi', get('ssi'));
   set('f-sre', get('sre'));
