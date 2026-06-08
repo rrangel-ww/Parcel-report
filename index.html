@@ -111,9 +111,10 @@
         <div class="dlist-row"><dt>Legal Description</dt><dd id="f-legal">—</dd></div>
         <div class="dlist-row"><dt>Area (ac)</dt><dd id="f-acres">—</dd></div>
         <div class="dlist-row"><dt>Fire District</dt><dd id="f-fire">—</dd></div>
-        <div class="dlist-row" style="display:none;"><dt>Well Report</dt><dd id="f-well">—</dd></div>
         <div class="dlist-row"><dt>Plat Book Page</dt><dd id="f-plat">—</dd></div>
         <div class="dlist-row"><dt>Assessor's Website</dt><dd id="f-link">—</dd></div>
+        <div class="dlist-row"><dt>Well Logs</dt><dd id="f-well">—</dd></div>
+        <div class="dlist-row"><dt>FEMA Flood Map</dt><dd id="f-fema">—</dd></div>
       </dl>
     </div></div><!--
  --><div class="two-col-cell" style="font-size:14px;"><div class="section">
@@ -199,7 +200,17 @@
 </footer>
 
 <script>
+  var BLANK = '\u2014';
   var p = new URLSearchParams(window.location.search);
+
+  var URLS = {
+    assessor: 'https://propertysearch.co.walla-walla.wa.us/PropertyAccess/Property.aspx?cid=0&year=2025&prop_id=',
+    platBook: 'https://www.co.walla-walla.wa.us/document_center/GIS/Taxbooks/',
+    wellSearch: 'https://appswr.ecology.wa.gov/wellconstruction/WellReportSearchResults',
+    femaSearch: 'https://msc.fema.gov/portal/search?AddressQuery=',
+    floodChapter: 'https://library.municode.com/wa/walla_walla_county/codes/code_of_ordinances?nodeId=TIT18EN_CH18.12FLPR',
+    faultsStandards: 'https://library.municode.com/wa/walla_walla_county/codes/code_of_ordinances?nodeId=TIT18EN_CH18.08CRARPR_18.08.560PESTPEHA'
+  };
 
   function get(key) {
     try {
@@ -214,11 +225,19 @@
   }
 
   function set(id, val) {
-    var el = document.getElementById(id);
-    if (el) el.textContent = val || '—';
+    var el = byId(id);
+    if (el) el.textContent = val || BLANK;
   }
 
-  var checklists = {
+  function byId(id) {
+    return document.getElementById(id);
+  }
+
+  function clear(el) {
+    while (el.firstChild) el.removeChild(el.firstChild);
+  }
+
+  var criticalAreaLinks = {
     'f-chr': 'https://www.wwcowa.gov/document_center/commdev/Applications/Checklist%20-%20Critical%20Aquifer%20Recharge%20Areas.html',
     'f-cmr': 'https://www.wwcowa.gov/document_center/commdev/Applications/Checklist%20-%20Critical%20Aquifer%20Recharge%20Areas.html',
     'f-cwp': 'https://www.wwcowa.gov/document_center/commdev/Applications/Checklist%20-%20Critical%20Aquifer%20Recharge%20Areas.html',
@@ -229,46 +248,203 @@
     'f-csl': 'https://www.wwcowa.gov/document_center/commdev/Applications/Checklist%20-%20Geologically%20Hazardous%20Areas.html',
     'f-cli': 'https://www.wwcowa.gov/document_center/commdev/Applications/Preliminary%20Liquefaction%20Assessment.html',
     'f-cwe': 'https://www.wwcowa.gov/document_center/commdev/Applications/Checklist%20-%20Wetlands.html',
-    'f-rip': 'https://www.wwcowa.gov/document_center/commdev/Applications/Checklist%20-%20Habitat%20Conservation%20Areas.html',
-    'f-cflt': 'https://library.municode.com/wa/walla_walla_county/codes/code_of_ordinances?nodeId=TIT18EN_CH18.08CRARPR_18.08.560PESTPEHA'
+    'f-rip': 'https://www.wwcowa.gov/document_center/commdev/Applications/Checklist%20-%20Habitat%20Conservation%20Areas.html'
   };
 
-  function setCA(id, val) {
-    var el = document.getElementById(id);
+  function appendSrOnly(parent) {
+    var span = document.createElement('span');
+    span.className = 'sr-only';
+    span.textContent = ' (opens in new tab)';
+    parent.appendChild(span);
+  }
+
+  function makeLink(url, text, className) {
+    var link = document.createElement('a');
+    link.href = url;
+    link.target = '_blank';
+    if (className) link.className = className;
+    link.appendChild(document.createTextNode(text));
+    appendSrOnly(link);
+    return link;
+  }
+
+  function setLink(id, url, text, fallback) {
+    var el = byId(id);
     if (!el) return;
-    var v = val || 'NO';
-    if (v.toLowerCase() === 'no') {
-      el.textContent = v;
-      el.className = 'ca-val ca-no';
-    } else {
-      el.className = 'ca-val ca-yes';
-      var url = checklists[id];
-      if (url) {
-        el.innerHTML = '<span style="color:#B72121;">' + v + '</span> <span style="color:#1a1f2e;">&ndash;</span> <a href="' + url + '" target="_blank" style="color:#0000FF;text-decoration:none;" onmouseover="this.style.textDecoration=\'underline\'" onmouseout="this.style.textDecoration=\'none\'">See Checklist &#x2197;<span style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;"> (opens in new tab)</span></a>';
-      } else {
-        el.innerHTML = '<span style="color:#B72121;">' + v + '</span>';
-      }
+    if (!url) {
+      el.textContent = fallback || BLANK;
+      return;
+    }
+    clear(el);
+    el.appendChild(makeLink(url, text, 'val-link'));
+  }
+
+  function makeCriticalAreaLink(url, text) {
+    var link = makeLink(url, text + ' \u2197');
+    link.style.color = '#0000FF';
+    link.style.textDecoration = 'none';
+    link.onmouseover = function() { this.style.textDecoration = 'underline'; };
+    link.onmouseout = function() { this.style.textDecoration = 'none'; };
+    return link;
+  }
+
+  function setCriticalAreaValue(el, val, url, linkText) {
+    clear(el);
+    el.className = 'ca-val ca-yes';
+
+    var valueSpan = document.createElement('span');
+    valueSpan.style.color = '#B72121';
+    valueSpan.textContent = val;
+    el.appendChild(valueSpan);
+
+    if (url) {
+      var dashSpan = document.createElement('span');
+      dashSpan.style.color = '#1a1f2e';
+      dashSpan.textContent = ' \u2013 ';
+      el.appendChild(dashSpan);
+      el.appendChild(makeCriticalAreaLink(url, linkText || 'See Checklist'));
     }
   }
 
-  function setCAText(id, val) {
-    var el = document.getElementById(id);
+  function isNo(val) {
+    return String(val).toUpperCase() === 'NO';
+  }
+
+  function setCriticalArea(id, val, options) {
+    var el = byId(id);
     if (!el) return;
+
+    options = options || {};
     var v = val || 'NO';
-    if (v.toUpperCase() === 'NO') {
-      el.textContent = v;
+    if (isNo(v)) {
+      el.textContent = options.noText || v;
       el.className = 'ca-val ca-no';
-    } else {
-      el.className = 'ca-val ca-yes';
-      el.innerHTML = '<span style="color:#B72121;">' + v + '</span> <span style="color:#1a1f2e;">&ndash;</span> <a href="https://library.municode.com/wa/walla_walla_county/codes/code_of_ordinances?nodeId=TIT18EN_CH18.12FLPR" target="_blank" style="color:#0000FF;text-decoration:none;" onmouseover="this.style.textDecoration=\'underline\'" onmouseout="this.style.textDecoration=\'none\'">See WWCC Chapter 18.12 Flood Damage Prevention &#x2197;<span style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;"> (opens in new tab)</span></a>';
+      return;
     }
+
+    setCriticalAreaValue(el, v, options.url || criticalAreaLinks[id], options.linkText);
+  }
+
+  function stripCommas(v) {
+    return v.replace(/,/g, '');
+  }
+
+  function buildQuery(params) {
+    var q = new URLSearchParams();
+    params.forEach(function(item) {
+      q.set(item[0], item[1]);
+    });
+    return q.toString();
+  }
+
+  function formatNameAbbrev(name, abbrev) {
+    return (name && abbrev) ? name + '  (' + abbrev + ')' : (name || null);
+  }
+
+  function setMailingAddress() {
+    var mailEl = byId('f-mail');
+    if (!mailEl) return;
+
+    var ad1 = get('ad1'), cty = get('cty'), pst = get('pst'), zip = get('zip');
+    var line2 = '';
+    if (cty) line2 += cty;
+    if (pst) line2 += (line2 ? ', ' : '') + pst;
+    if (zip) line2 += (line2 ? ' ' : '') + zip;
+
+    clear(mailEl);
+    if (ad1 && line2) {
+      mailEl.appendChild(document.createTextNode(ad1));
+      mailEl.appendChild(document.createElement('br'));
+      mailEl.appendChild(document.createTextNode(line2));
+    } else {
+      mailEl.textContent = ad1 || line2 || BLANK;
+    }
+  }
+
+  function setPlatBookPage() {
+    var pbp = get('pbp'), pbl = get('pbl');
+    if (pbp && pbl) {
+      setLink('f-plat', URLS.platBook + pbl, pbp);
+    } else {
+      set('f-plat', pbp);
+    }
+  }
+
+  function setAssessorLink() {
+    var pid = get('lnk');
+    setLink('f-link', pid ? URLS.assessor + pid : null, 'View Property Record');
+  }
+
+  function setWellLogsLink() {
+    var bwl = get('bwl'), bwr = get('bwr'), bwt = get('bwt'), bwb = get('bwb');
+    var bsl = get('bsl'), bsr = get('bsr'), bst = get('bst'), bsb = get('bsb');
+
+    if (bwl && bwr && bwt && bwb && bsl && bsr && bst && bsb) {
+      var wellUrl = URLS.wellSearch + '?' + buildQuery([
+        ['left', stripCommas(bwl)],
+        ['right', stripCommas(bwr)],
+        ['top', stripCommas(bwt)],
+        ['bottom', stripCommas(bwb)],
+        ['selLeft', stripCommas(bsl)],
+        ['selRight', stripCommas(bsr)],
+        ['selTop', stripCommas(bst)],
+        ['selBottom', stripCommas(bsb)],
+        ['search_scope', '1'],
+        ['result_num', '25'],
+        ['sort_order', 'OwnerName'],
+        ['page_index', '0'],
+        ['from', 'WellConstructionMap']
+      ]);
+      setLink('f-well', wellUrl, 'View Well Report');
+    } else {
+      setLink('f-well', null, 'View Well Report');
+    }
+  }
+
+  function setFemaLink() {
+    var femaLon = get('flon') || get('lon');
+    var femaLat = get('flat') || get('lat');
+    var parsedLon = parseFloat(femaLon);
+    var parsedLat = parseFloat(femaLat);
+
+    if (femaLon && femaLat && !isNaN(parsedLon) && !isNaN(parsedLat)) {
+      var femaQuery = parsedLon.toString() + ', ' + parsedLat.toString();
+      setLink('f-fema', URLS.femaSearch + encodeURIComponent(femaQuery), 'View FEMA Flood Map');
+    } else {
+      setLink('f-fema', null, 'View FEMA Flood Map');
+    }
+  }
+
+  function setSetbackNote() {
+    var sbn = get('sbn');
+    if (sbn) {
+      set('f-sbn', sbn.replace(/\s*(\(\d+\))/g, function(match, p1, offset) {
+        return offset === 0 ? p1 : '\n' + p1;
+      }));
+    }
+  }
+
+  function setRiparianBuffer() {
+    var ripName = get('rnn'), ripBuf = get('rbn');
+    var ripEl = byId('f-rip');
+    if (!ripEl) return;
+
+    if (!ripName || isNo(ripName)) {
+      ripEl.textContent = 'NO';
+      ripEl.className = 'ca-val ca-no';
+      return;
+    }
+
+    var ripDisplay = ripName;
+    if (ripBuf && !isNo(ripBuf)) ripDisplay += ' \u2014 ' + ripBuf;
+    setCriticalAreaValue(ripEl, ripDisplay, criticalAreaLinks['f-rip'], 'See Checklist');
   }
 
   // ── Dates ──
   var now = new Date();
   var dateStr = now.toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
-  document.getElementById('report-date').textContent = 'Generated ' + dateStr;
-  document.getElementById('footer-date').textContent = 'Generated: ' + dateStr;
+  byId('report-date').textContent = 'Generated ' + dateStr;
+  byId('footer-date').textContent = 'Generated: ' + dateStr;
 
   // ── Header ──
   var sit = get('sit');
@@ -286,146 +462,65 @@
   set('f-geo',   geo);
   set('f-sit',   sit);
   set('f-owner', own);
-  set('f-fire',  get('fir'));
-
-  var mailEl = document.getElementById('f-mail');
-  var ad1 = get('ad1'), cty = get('cty'), pst = get('pst'), zip = get('zip');
-  var line2 = '';
-  if (cty) line2 += cty;
-  if (pst) line2 += (line2 ? ', ' : '') + pst;
-  if (zip) line2 += (line2 ? ' ' : '') + zip;
-  if (mailEl) {
-    if (ad1 && line2)    mailEl.innerHTML = ad1 + '<br>' + line2;
-    else if (ad1)        mailEl.textContent = ad1;
-    else if (line2)      mailEl.textContent = line2;
-    else                 mailEl.textContent = '—';
-  }
-
+  setMailingAddress();
   set('f-legal', get('leg'));
 
   var acr = get('acr');
-  document.getElementById('f-acres').textContent = (acr && !isNaN(parseFloat(acr))) ? parseFloat(acr).toFixed(2) + ' ac' : '—';
-
-  // Well Report — hidden until ready
-  var wellEl = document.getElementById('f-well');
-  var bwl = get('bwl'), bwr = get('bwr'), bwt = get('bwt'), bwb = get('bwb');
-  var bsl = get('bsl'), bsr = get('bsr'), bst = get('bst'), bsb = get('bsb');
-  if (wellEl && bwl && bwr && bwt && bwb && bsl && bsr && bst && bsb) {
-    function stripCommas(v) { return v.replace(/,/g, ''); }
-    var wellUrl = 'https://appswr.ecology.wa.gov/wellconstruction/map/WCLSWebMap/SearchResultsWithPaging.aspx?left=' + stripCommas(bwl) + '&right=' + stripCommas(bwr) + '&top=' + stripCommas(bwt) + '&bottom=' + stripCommas(bwb) + '&selLeft=' + stripCommas(bsl) + '&selRight=' + stripCommas(bsr) + '&selTop=' + stripCommas(bsb) + '&selBottom=' + stripCommas(bst) + '&search_scope=1&result_num=25&sort_order=OwnerName&page_index=0';
-    wellEl.innerHTML = '<a class="val-link" href="' + wellUrl + '" target="_blank">View Well Logs<span class="sr-only"> (opens in new tab)</span></a>';
-  } else {
-    if (wellEl) wellEl.textContent = '—';
-  }
-
-  var platEl = document.getElementById('f-plat');
-  var pbp = get('pbp'), pbl = get('pbl');
-  if (platEl) {
-    if (pbp && pbl) {
-      var platUrl = 'https://www.co.walla-walla.wa.us/document_center/GIS/Taxbooks/' + pbl;
-      platEl.innerHTML = '<a class="val-link" href="' + platUrl + '" target="_blank">' + pbp + '<span class="sr-only"> (opens in new tab)</span></a>';
-    } else if (pbp) {
-      platEl.textContent = pbp;
-    } else {
-      platEl.textContent = '—';
-    }
-  }
-
-  var pid = get('lnk');
-  var linkEl = document.getElementById('f-link');
-  if (linkEl && pid) {
-    var fullUrl = 'https://propertysearch.co.walla-walla.wa.us/PropertyAccess/Property.aspx?cid=0&year=2025&prop_id=' + pid;
-    linkEl.innerHTML = '<a class="val-link" href="' + fullUrl + '" target="_blank">View Property Record<span class="sr-only"> (opens in new tab)</span></a>';
-  } else {
-    if (linkEl) linkEl.textContent = '—';
-  }
+  set('f-acres', (acr && !isNaN(parseFloat(acr))) ? parseFloat(acr).toFixed(2) + ' ac' : null);
+  set('f-fire', get('fir'));
+  setPlatBookPage();
+  setAssessorLink();
+  setWellLogsLink();
+  setFemaLink();
 
   // ── Development Regulations ──
-  var zon = get('zon'), zab = get('zab');
-  set('f-zoning', (zon && zab) ? zon + '  (' + zab + ')' : (zon || null));
-
-  var lu = get('lu'), lab = get('lab');
-  set('f-landuse', (lu && lab) ? lu + '  (' + lab + ')' : (lu || null));
-
+  set('f-zoning', formatNameAbbrev(get('zon'), get('zab')));
+  set('f-landuse', formatNameAbbrev(get('lu'), get('lab')));
   set('f-uga', get('uga'));
-
-  var sho = get('sho'), sha = get('sha');
-  var shoreEl = document.getElementById('f-shoreline');
-  if (shoreEl) shoreEl.textContent = (sho && sha) ? sho + '  (' + sha + ')' : (sho || '—');
-
-  var mineralEl = document.getElementById('f-mineral');
-  if (mineralEl) mineralEl.textContent = get('mrl') || '—';
-  set('f-seismic',  get('smc'));
-  var mcEl = document.getElementById('f-millcreek');
-  if (mcEl) mcEl.textContent = get('mc') || '—';
-  var beeEl = document.getElementById('f-bee');
-  if (beeEl) beeEl.textContent = get('bee') || '—';
+  set('f-shoreline', formatNameAbbrev(get('sho'), get('sha')));
+  set('f-mineral', get('mrl'));
+  set('f-seismic', get('smc'));
+  set('f-millcreek', get('mc'));
+  set('f-bee', get('bee'));
   set('f-sfr', get('sfr'));
   set('f-ssi', get('ssi'));
   set('f-sre', get('sre'));
-
-  var sbn = get('sbn');
-  if (sbn) {
-    var formatted = sbn.replace(/\s*(\(\d+\))/g, function(match, p1, offset) {
-      return offset === 0 ? p1 : '\n' + p1;
-    });
-    document.getElementById('f-sbn').textContent = formatted;
-  }
+  setSetbackNote();
 
   // ── Critical Areas ──
-  setCAText('f-flood', get('cfr'));
-  setCAText('f-fz',    get('cfz'));
-  setCA('f-cmr', get('cmr'));
-  setCA('f-chr', get('chr'));
-  setCA('f-cwp', get('cwp'));
-  setCA('f-csh', get('csh'));
-  setCA('f-chk', get('chk'));
-  setCA('f-cwi', get('cwi'));
-  setCA('f-cso', get('cso'));
-  // Slope / Erosion Hazard — shows — until layer is updated
-  // setCA('f-csl', get('csl'));
-  setCA('f-cli', get('cli'));
-  setCA('f-cwe', get('cwe'));
-
-  // Faults — custom link text
-  var cfltEl = document.getElementById('f-cflt');
-  var cfltVal = get('cflt') || 'NO';
-  if (cfltEl) {
-    if (cfltVal.toLowerCase() === 'no') {
-      cfltEl.textContent = 'NO';
-      cfltEl.className = 'ca-val ca-no';
+  [
+    { id: 'f-flood', param: 'cfr', url: URLS.floodChapter, linkText: 'See WWCC Chapter 18.12 Flood Damage Prevention' },
+    { id: 'f-fz',    param: 'cfz', url: URLS.floodChapter, linkText: 'See WWCC Chapter 18.12 Flood Damage Prevention' },
+    { id: 'f-cmr',   param: 'cmr' },
+    { id: 'f-chr',   param: 'chr' },
+    { id: 'f-cwp',   param: 'cwp' },
+    { id: 'f-csh',   param: 'csh' },
+    { id: 'f-chk',   param: 'chk' },
+    { id: 'f-cwi',   param: 'cwi' },
+    { id: 'f-cso',   param: 'cso' },
+    { id: 'f-csl',   param: 'csl', enabled: false },
+    { id: 'f-cli',   param: 'cli' },
+    { id: 'f-cflt',  param: 'cflt', url: URLS.faultsStandards, linkText: 'See WWCC 18.08.550(D) Seismic Hazard Areas Standards', noText: 'NO' },
+    { id: 'f-rip',   type: 'riparian' },
+    { id: 'f-cwe',   param: 'cwe' }
+  ].forEach(function(area) {
+    if (area.enabled === false) return;
+    if (area.type === 'riparian') {
+      setRiparianBuffer();
     } else {
-      cfltEl.className = 'ca-val ca-yes';
-      cfltEl.innerHTML = '<span style="color:#B72121;">' + cfltVal + '</span> <span style="color:#1a1f2e;">&ndash;</span> <a href="https://library.municode.com/wa/walla_walla_county/codes/code_of_ordinances?nodeId=TIT18EN_CH18.08CRARPR_18.08.560PESTPEHA" target="_blank" style="color:#0000FF;text-decoration:none;" onmouseover="this.style.textDecoration=\'underline\'" onmouseout="this.style.textDecoration=\'none\'">See WWCC 18.08.550(D) Seismic Hazard Areas Standards &#x2197;<span style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;"> (opens in new tab)</span></a>';
+      setCriticalArea(area.id, get(area.param), area);
     }
-  }
-
-  // Riparian Buffer
-  var ripEl = document.getElementById('f-rip');
-  var ripName = get('rnn'), ripBuf = get('rbn');
-  if (ripEl) {
-    var nameIsNo = !ripName || ripName.toUpperCase() === 'NO';
-    if (nameIsNo) {
-      ripEl.textContent = 'NO';
-      ripEl.className = 'ca-val ca-no';
-    } else {
-      var ripDisplay = ripName;
-      if (ripBuf && ripBuf.toUpperCase() !== 'NO') ripDisplay += ' — ' + ripBuf;
-      ripEl.className = 'ca-val ca-yes';
-      var ripUrl = checklists['f-rip'];
-      ripEl.innerHTML = '<span style="color:#B72121;">' + ripDisplay + '</span> <span style="color:#1a1f2e;">&ndash;</span> <a href="' + ripUrl + '" target="_blank" style="color:#0000FF;text-decoration:none;" onmouseover="this.style.textDecoration=\'underline\'" onmouseout="this.style.textDecoration=\'none\'">See Checklist &#x2197;<span style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;"> (opens in new tab)</span></a>';
-    }
-  }
+  });
 
   // ── Show correct button ──
   try {
     if (p.get('print') === '1') {
-      document.getElementById('btn-print').style.display = 'flex';
+      byId('btn-print').style.display = 'flex';
     } else {
-      document.getElementById('btn-view').style.display = 'flex';
+      byId('btn-view').style.display = 'flex';
     }
   } catch(e) {
-    var vb = document.getElementById('btn-view');
+    var vb = byId('btn-view');
     if (vb) vb.style.display = 'flex';
   }
 </script>
