@@ -262,6 +262,7 @@
     var link = document.createElement('a');
     link.href = url;
     link.target = '_blank';
+    link.rel = 'noopener noreferrer';
     if (className) link.className = className;
     link.appendChild(document.createTextNode(text));
     appendSrOnly(link);
